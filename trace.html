@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312"/>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <title></title>
+    <style type="text/css">
+        body, html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+
+        }
+
+        #l-map {
+            height: 100%;
+            width: 100%;
+        }
+
+        #r-result {
+            width: 100%;
+            font-size: 14px;
+            line-height: 20px;
+            overflow: auto;
+        }
+
+        #l-input {
+            height: 30px;
+            width: 300px;
+        }
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=your_ak"></script>
+
+
+
+
+</head>
+<body>
+ 
+ <div>  
+add location :<input id="l-input" type="text" name="locs" />  (lat,lng,tag;)
+<input type="button" onclick="add_locs();" value="add" />
+<input type="button" onclick="clear_markers();" value="clear" >
+</div>
+<div id="l-map"></div>
+
+ 
+
+
+
+</body>
+</html>
+
+
+
+   <script type="text/javascript">
+    var map = new BMap.Map("l-map");
+    map.enableScrollWheelZoom(true);
+    var index = 0;
+    var myGeo = new BMap.Geocoder();
+    var pointers=new Array();
+ 
+
+
+   
+
+</script>
+<script type="text/javascript">
+
+     function add_locs(){
+         
+        var locStr=document.getElementById("l-input").value;
+        document.getElementById("l-input").value="";
+        var locs=locStr.split(";");
+
+        for (var i = locs.length - 1; i >= 0; i--) {
+            var  latlng=locs[i].split(",");
+            var point=new BMap.Point(latlng[0],latlng[1]);
+            var marker = new BMap.Marker(point);
+            map.addOverlay(marker);
+            marker.setLabel(new BMap.Label( latlng[2], {offset: new BMap.Size(20, -10)}));
+            pointers.push(point);
+      } 
+
+
+    if(pointers.length>0){
+
+        var startPoint=pointers[0];
+        var endPoint=pointers[pointers.length-1];
+
+        var middlePoint=new BMap.Point((startPoint.lng+endPoint.lng)/2,(startPoint.lat+endPoint.lat)/2);
+        map.centerAndZoom(middlePoint,13);
+    }
+
+    }
+
+    function clear_markers(){
+        map.clearOverlays(); 
+        pointers=new Array();
+    }
+</script>
